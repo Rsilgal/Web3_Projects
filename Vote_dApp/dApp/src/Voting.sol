@@ -9,6 +9,7 @@ contract Voting {
     uint8 minimumPaticipation;
 
     address[] private optionsList;
+    address[] private usersList;
 
     mapping(address => uint256) private votes; // option address => votes count
     mapping(address => bool) userHasVoted;
@@ -27,6 +28,7 @@ contract Voting {
         endDate = durationDays * 1 days;
         minimumPaticipation = _minimumPaticipation;
         optionsList = _options;
+        usersList = _users;
         _optionsGenerator(_options);
         _usersGenerator(_users);
         emit startVoting();
@@ -73,12 +75,16 @@ contract Voting {
         totalVotes++;
     }
 
-    function getOptionResult(address option) public view returns (uint256) {
+    function getOptionResult(address option) public view processOver returns (uint256) {
         return votes[option] / totalVotes;
     }
 
     function getAvailableOptions() external view returns (address[] memory) {
         return optionsList;
+    }
+
+    function getAvailableUsers() external view returns (address[] memory) {
+        return usersList;
     }
 
     function isValid() external view returns (bool) {
