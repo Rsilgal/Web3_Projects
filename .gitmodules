@@ -1,0 +1,3 @@
+[submodule "Vote_dApp/dApp/lib/forge-std"]
+	path = Vote_dApp/dApp/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
