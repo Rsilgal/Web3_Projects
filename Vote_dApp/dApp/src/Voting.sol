@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 contract Voting {
-    uint256 startDate;
+    uint256 public startDate; // Extract to a function
     uint256 private endDate;
     uint256 durationDays;
     uint256 totalVotes;
@@ -60,7 +60,7 @@ contract Voting {
     }
 
     modifier processOver() {
-        require(block.timestamp > endDate);
+        require(block.timestamp > endDate, "The process is not over");
         _;
     }
 
@@ -76,7 +76,7 @@ contract Voting {
     }
 
     function getOptionResult(address option) public view processOver returns (uint256) {
-        return votes[option] / totalVotes;
+        return (votes[option] * 100 )/ totalVotes;
     }
 
     function getAvailableOptions() external view returns (address[] memory) {
