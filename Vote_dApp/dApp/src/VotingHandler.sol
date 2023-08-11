@@ -10,6 +10,8 @@ contract VotingHandler is Ownable {
     mapping(uint256 => address) _identifierFromVote;
     uint256 _totalVotesAdded = 0;
 
+    event VoteAdded(address);
+
 
     function addVote(
         uint256 _startDate, 
@@ -23,18 +25,26 @@ contract VotingHandler is Ownable {
         _totalVotesAdded++;
         _creatorOfTheVote[msg.sender].push(_totalVotesAdded);
         _identifierFromVote[_totalVotesAdded] = address(vote);
-        //TODO: Emit an event to send the address of the created contract
+        emit VoteAdded(address(vote));
     }
 
-    function getVotesByCreator(address creator) external view returns(address[] memory result) {       
+    function getVotesByCreator(address creator) external view returns(address[] memory) {       
+        address[] memory result;
         for (uint256 i = 0; i < _creatorOfTheVote[creator].length; i++) {
             result[i] = _identifierFromVote[_creatorOfTheVote[creator][i]];
         }
+        return result;
     }
 
-    function getAllVotes() external view returns(address[] memory result){
+    function getAllVotes() external view returns(address[] memory){
+        address[] memory result;
         for (uint256 i = 0; i < _totalVotesAdded; i++) {
             result[i] = _identifierFromVote[i];
         }
+        return result;
+    }
+
+    function getVoteById(uint256 id) external view returns(address){
+        return _identifierFromVote[id];
     }
 }
