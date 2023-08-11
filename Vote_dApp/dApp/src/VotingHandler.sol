@@ -6,9 +6,9 @@ import {Ownable} from "openzeppelin/access/Ownable.sol";
 
 contract VotingHandler is Ownable {
     Voting[] public votes;
-    mapping(address => uint256[]) creatorOfTheVote;
-    mapping(uint256 => address) identifierFromVote;
-    uint256 totalVotesAdded = 0;
+    mapping(address => uint256[]) _creatorOfTheVote;
+    mapping(uint256 => address) _identifierFromVote;
+    uint256 _totalVotesAdded = 0;
 
 
     function addVote(
@@ -20,21 +20,21 @@ contract VotingHandler is Ownable {
         ) external {
         Voting vote = new Voting(_startDate, _durationDays, _minumumParticipation, _options, _users);
         votes.push(vote);
-        totalVotesAdded++;
-        creatorOfTheVote[msg.sender].push(totalVotesAdded);
-        identifierFromVote[totalVotesAdded] = address(vote);
+        _totalVotesAdded++;
+        _creatorOfTheVote[msg.sender].push(_totalVotesAdded);
+        _identifierFromVote[_totalVotesAdded] = address(vote);
         //TODO: Emit an event to send the address of the created contract
     }
 
     function getVotesByCreator(address creator) external view returns(address[] memory result) {       
-        for (uint256 i = 0; i < creatorOfTheVote[creator].length; i++) {
-            result[i] = identifierFromVote[creatorOfTheVote[creator][i]];
+        for (uint256 i = 0; i < _creatorOfTheVote[creator].length; i++) {
+            result[i] = _identifierFromVote[_creatorOfTheVote[creator][i]];
         }
     }
 
     function getAllVotes() external view returns(address[] memory result){
-        for (uint256 i = 0; i < totalVotesAdded; i++) {
-            result[i] = identifierFromVote[i];
+        for (uint256 i = 0; i < _totalVotesAdded; i++) {
+            result[i] = _identifierFromVote[i];
         }
     }
 }
