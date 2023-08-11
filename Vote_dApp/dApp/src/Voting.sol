@@ -3,41 +3,41 @@ pragma solidity 0.8.19;
 
 contract Voting {
     uint256 public startDate; // Extract to a function
-    uint256 private endDate;
-    uint256 durationDays;
-    uint256 totalVotes;
-    uint256 minimumPaticipation;
+    uint256 public endDate;
+    uint256 public durationDays;
+    uint256 public totalVotes;
+    uint256 public minimumPaticipation;
 
-    address[] private optionsList;
-    address[] private usersList;
+    address[] _optionsList;
+    address[] _usersList;
 
-    mapping(address => uint256) private votes; // option address => votes count
-    mapping(address => bool) userHasVoted;
-    mapping(address => bool) options; // option address => option id
-    mapping(address => bool) userAllowed;
+    mapping(address => uint256) _votes; // option address => votes count
+    mapping(address => bool) _userHasVoted;
+    mapping(address => bool) _options; // option address => option id
+    mapping(address => bool) _userAllowed;
 
     constructor(
         uint256 _startDate,
         uint256 _durationDays,
         uint256 _minimumPaticipation,
-        address[] memory _options,
-        address[] memory _users
+        address[] memory options,
+        address[] memory users
     ) {
         startDate = _startDate;
         durationDays = _durationDays;
         endDate = durationDays * 1 days;
         minimumPaticipation = _minimumPaticipation;
-        optionsList = _options;
-        usersList = _users;
-        _optionsGenerator(_options);
-        _usersGenerator(_users);
-        emit startVoting();
+        _optionsList = options;
+        _usersList = users;
+        _optionsGenerator(options);
+        _usersGenerator(users);
+        emit StartVoting();
     }
 
-    event startVoting();
-    event stopVoting();
-    event voteAdded();
-    event sendResult(uint256);
+    event StartVoting();
+    event StopVoting();
+    event VoteAdded();
+    event SendResult(uint256);
 
     modifier validOption(address _option) {
         require(_optionValidator(_option), "No valid option");
@@ -50,7 +50,7 @@ contract Voting {
     }
 
     modifier canVote(address _user) {
-        require(userHasVoted[_user] == false, "You has voted");
+        require(_userHasVoted[_user] == false, "You has voted");
         _;
     }
 
@@ -76,15 +76,15 @@ contract Voting {
     }
 
     function getOptionResult(address option) public view processOver returns (uint256) {
-        return (votes[option] * 100 )/ totalVotes;
+        return (_votes[option] * 100 )/ totalVotes;
     }
 
     function getAvailableOptions() external view returns (address[] memory) {
-        return optionsList;
+        return _optionsList;
     }
 
     function getAvailableUsers() external view returns (address[] memory) {
-        return usersList;
+        return _usersList;
     }
 
     function isValid() external view returns (bool) {
@@ -92,28 +92,28 @@ contract Voting {
     }
 
     function _addVote(address _option) internal {
-        userHasVoted[msg.sender] = true;
-        votes[_option]++;
-        emit voteAdded();
+        _userHasVoted[msg.sender] = true;
+        _votes[_option]++;
+        emit VoteAdded();
     }
 
     function _optionValidator(address option) internal view returns (bool) {
-        return options[option];
+        return _options[option];
     }
 
     function _userValidator(address user) internal view returns (bool) {
-        return userAllowed[user];
+        return _userAllowed[user];
     }
 
-    function _optionsGenerator(address[] memory _options) internal {
-        for (uint256 index = 0; index < _options.length; index++) {
-            options[_options[index]] = true;
+    function _optionsGenerator(address[] memory options) internal {
+        for (uint256 index = 0; index < options.length; index++) {
+            _options[options[index]] = true;
         }
     }
 
     function _usersGenerator(address[] memory _users) internal {
         for (uint256 index = 0; index < _users.length; index++) {
-            userAllowed[_users[index]] = true;
+            _userAllowed[_users[index]] = true;
         }
     }
 }
