@@ -6,7 +6,7 @@ contract Voting {
     uint256 private endDate;
     uint256 durationDays;
     uint256 totalVotes;
-    uint8 minimumPaticipation;
+    uint256 minimumPaticipation;
 
     address[] private optionsList;
     address[] private usersList;
@@ -19,7 +19,7 @@ contract Voting {
     constructor(
         uint256 _startDate,
         uint256 _durationDays,
-        uint8 _minimumPaticipation,
+        uint256 _minimumPaticipation,
         address[] memory _options,
         address[] memory _users
     ) {
