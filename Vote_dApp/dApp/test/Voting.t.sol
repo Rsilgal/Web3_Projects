@@ -7,11 +7,11 @@ import "forge-std/console.sol";
 
 contract VotingTest is Test {
     Voting public voting;
-    uint256 startAt;
+    uint256 public startAt;
     address[] public options;
     address[] public users;
 
-    event startVoting();
+    event StartVoting();
 
     function setUp() public {
         options = [address(1), address(2), address(3), address(9)];
