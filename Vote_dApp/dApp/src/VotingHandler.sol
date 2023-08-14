@@ -12,23 +12,23 @@ contract VotingHandler is Ownable {
 
     event VoteAdded(address);
 
-
     function addVote(
-        uint256 _startDate, 
+        uint256 _startDate,
         uint256 _durationDays,
         uint256 _minumumParticipation,
         address[] memory _options,
         address[] memory _users
-        ) external {
+    ) external returns (address) {
         Voting vote = new Voting(_startDate, _durationDays, _minumumParticipation, _options, _users);
         votes.push(vote);
         _totalVotesAdded++;
         _creatorOfTheVote[msg.sender].push(_totalVotesAdded);
         _identifierFromVote[_totalVotesAdded] = address(vote);
         emit VoteAdded(address(vote));
+        return address(vote);
     }
 
-    function getVotesByCreator(address creator) external view returns(address[] memory) {       
+    function getVotesByCreator(address creator) external view returns (address[] memory) {
         address[] memory result;
         for (uint256 i = 0; i < _creatorOfTheVote[creator].length; i++) {
             result[i] = _identifierFromVote[_creatorOfTheVote[creator][i]];
@@ -36,7 +36,7 @@ contract VotingHandler is Ownable {
         return result;
     }
 
-    function getAllVotes() external view returns(address[] memory){
+    function getAllVotes() external view returns (address[] memory) {
         address[] memory result;
         for (uint256 i = 0; i < _totalVotesAdded; i++) {
             result[i] = _identifierFromVote[i];
@@ -44,7 +44,7 @@ contract VotingHandler is Ownable {
         return result;
     }
 
-    function getVoteById(uint256 id) external view returns(address){
+    function getVoteById(uint256 id) external view returns (address) {
         return _identifierFromVote[id];
     }
 }
