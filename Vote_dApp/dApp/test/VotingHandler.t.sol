@@ -3,6 +3,7 @@ pragma solidity 0.8.19;
 
 import {Test} from "forge-std/Test.sol";
 import {VotingHandler} from "../src/VotingHandler.sol";
+import {Voting} from "../src/Voting.sol";
 
 contract VotingHandlerTest is Test {
     VotingHandler public handler;
@@ -17,5 +18,10 @@ contract VotingHandlerTest is Test {
         options = [address(1), address(2), address(3), address(9)];
         users = [address(4), address(5), address(6), address(7), address(8)];
         handler = new VotingHandler();
+    }
+
+    function test_AddVote() public {
+        address voteAddress = handler.addVote(startAt, 1, 1, options, users);
+        assertEq(voteAddress, handler.getVoteById(1));
     }
 }
