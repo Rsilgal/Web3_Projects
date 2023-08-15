@@ -1,8 +1,15 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  /* max-width: 1280px; */
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+}
+
+header {
+  border: blue solid 2px;
 }
 
 .logo {

@@ -1,35 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useState } from "react";
+import "./App.css";
+import { Header } from "./components/Header";
+import { Selector } from "./components/Selector";
+import { Boton } from "./components/Boton";
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { Contract } from "ethers";
+import { contractABI, contractAddress } from "./constants";
+import { formatUnits } from "ethers";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0);
+  const votaciones: string[] = ["Votación 1", "Votación 2"];
+  const opciones: string[] = ["Opción 1", "Opción 2", "Opción 3"];
 
+  let provider;
+  let signer;
+
+  const walletConnection = async () => {
+    console.log("Cargado");
+
+    if (window.ethereum == null) {
+      console.log("Mongolo, instala Metamask");
+    } else {
+      try {
+        provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        console.log("Provider:", provider);
+        console.log("Signer:", signer);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  let contract;
+
+  const contractConnection = async () => {
+    contract = new Contract(contractAddress, contractABI, signer);
+    // contract = new Contract(contractAddress, contractABI, provider);
+    let retieve = await contract.retrieve();
+    console.log(formatUnits(retieve));
+
+    let quantity = await contract.store(99875);
+    console.log(quantity);
+
+    retieve = await contract.retrieve();
+    console.log(formatUnits(retieve));
+  };
+
+  const handlerClick = async () => {
+    console.log("Se ha pulsado");
+    await walletConnection();
+  };
+
+  const show = async () => {
+    console.log("Provider:", provider);
+    console.log("Signer:", signer);
+    let retieve = await contract.retrieve();
+    console.log(formatUnits(retieve));
+  };
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <header>
+        <Header />
+      </header>
+      <main>
+        <Selector entrada={votaciones} name="votaciones" id="1"></Selector>
+
+        <div>
+          {" "}
+          {/* Esta etiqueta será la tarjeta */}
+          <Selector entrada={opciones} name="opciones" id="2" />
+          {/* <button onClick={handlerClick}>Vote</button> */}
+          <Boton func={handlerClick} texto="Conectar a la red" />
+          <Boton func={contractConnection} texto="Conectar al contrato" />
+          <Boton func={show} texto="Show" />
+        </div>
+      </main>
+      Signer: {signer}
+      <br />
+      Provider: {provider}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

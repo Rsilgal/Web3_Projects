@@ -1,0 +1,10 @@
+.Tarjeta {
+    background-color: grey;
+}
+
+.Tarjeta .div{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: end;
+}

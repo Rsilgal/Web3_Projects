@@ -1,0 +1,11 @@
+.Selector {
+    margin-top: 16px;
+}
+
+select {
+    border-radius: 15px;
+    min-width: 240px;
+    min-height: 50px;
+    font-size: xx-large;
+    text-align: center;
+}
